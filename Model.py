@@ -58,13 +58,21 @@ class Field:
         self.slots.remove(card)
 
     def __str__(self):
-        return str(i for i in self.slots)
+        arr = []
+        for i in self.slots:
+            arr.append(str(i))
+        return str(arr)
 
 
 class Hand:
     
     def __init__(self,cards):
         self.cards=cards
+
+    def avaible(self):
+        if len(self.cards) > 0:
+            return True
+        return False
 
     def draw(self,card):
         self.cards.append(card)
@@ -73,7 +81,10 @@ class Hand:
         self.cards.remove(card)
 
     def __str__(self):
-        return str(i for i in self.cards)
+        arr = []
+        for i in self.cards:
+            arr.append(str(i))
+        return str(arr)
 
 
 class Player:
@@ -121,27 +132,46 @@ class Match:
         self.counter=1
 
     def begin(self):
+        allowedOp = ["set","atk","end","1","2","3"]
         self.player1.start()
         self.player2.start()
         while True:
             if self.turn:
-                tmpN = [i for i in range(len(self.player1.hand.cards))]
-                x = input("[" + str(self.counter) + "] " + " What do you want to do [set]?\n" + str(self.player1) + " |\n")
-                if x == "set":
-                    for enume in range(len(self.player1.hand.cards)):
-                        print(tmpN[enume], self.player1.hand.cards[enume])
-                    toSet = int(input("Number: "))
-                    self.player1.set(self.player1.hand.cards[toSet])
+                tmpN = {}
+                for i in range(len(self.player1.hand.cards)):
+                    tmpN[i+1]=self.player1.hand.cards[i]
+                x=""
+                while not x in allowedOp:
+                    x = input("[" + str(self.counter) + "] [" + self.player1.name+ "] What do you want to do [1|set][2|atk][3|end]?\n" + str(self.player1.hand) + "\n" + str(self.player1.field) + "\n")
+                    if x == "set" or x == "1":
+                        if not self.player1.hand.avaible():
+                            x=""
+                            continue
+                        for i in range(len(tmpN)):
+                            print(i+1, tmpN[i+1])
+                        toSet = int(input("Number: ")) - 1
+                        self.player1.set(self.player1.hand.cards[toSet])
+                    #elif x == "atk" or x == "2":
+                    #elif x == "end" or x == "3":
                 self.turn = False
                 self.counter = self.counter + 1
             else:
-                tmpN = [i for i in range(len(self.player2.hand.cards))]
-                x = input("[" + str(self.counter) + "] " + " What do you want to do [set]?\n" + str(self.player2) + " |\n")
-                if x == "set":
-                    for enume in range(len(self.player2.hand.cards)):
-                        print(tmpN[enume], self.player2.hand.cards[enume])
-                    toSet = int(input("Number: "))
-                    self.player2.set(self.player2.hand.cards[toSet])
+                tmpN = {}
+                for i in range(len(self.player2.hand.cards)):
+                    tmpN[i+1]=self.player2.hand.cards[i]
+                x=""
+                while not x in allowedOp:
+                    x = input("[" + str(self.counter) + "] [" + self.player2.name+ "] What do you want to do [1|set][2|atk][3|end]?\n" + str(self.player2.hand) + "\n" + str(self.player2.field) + "\n")
+                    if x == "set" or x == "1":
+                        if not self.player2.hand.avaible():
+                            x=""
+                            continue
+                        for i in range(len(tmpN)):
+                            print(i+1, tmpN[i+1])
+                        toSet = int(input("Number: ")) - 1
+                        self.player2.set(self.player2.hand.cards[toSet])
+                    #elif x == "atk" or x == "2":
+                    #elif x == "end" or x == "3":
                 self.turn = True
                 self.counter = self.counter + 1
 

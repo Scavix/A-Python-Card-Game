@@ -1,8 +1,7 @@
-from Model import Card
-from Model import Deck
+from Model import *
 
 
-class MyIO:
+class Controller:
 
     def readDeck(path):
         f = open(path,"r")
